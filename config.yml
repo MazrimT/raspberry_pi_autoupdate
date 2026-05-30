@@ -1,0 +1,2 @@
+# autoupdate setup options — saved by './run.sh setup'. Replay with: ./run.sh setup-from-config
+args: '--cron=* * * * *' --no-reboot
