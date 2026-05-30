@@ -35,13 +35,24 @@ CRON_SCHEDULE=""
 USED_FLAGS=()
 for arg in "$@"; do
     case "$arg" in
-        --cron=*)          CRON_SCHEDULE="${arg#--cron=}" ;;
-        --no-reboot)       ALLOW_REBOOT=false ;;
-        --no-full-upgrade) UPGRADE_TYPE=upgrade ;;
-        --verbose-log)     VERBOSE_LOG=1 ;;
-        --no-autoremove)   AUTOREMOVE=false ;;
-        --no-autoclean)    AUTOCLEAN=false ;;
-        *)                 continue ;;
+        --cron=*)
+            CRON_SCHEDULE="${arg#--cron=}"
+            ;;
+        --no-reboot)
+            ALLOW_REBOOT=false
+            ;;
+        --no-full-upgrade)
+            UPGRADE_TYPE=upgrade
+            ;;
+        --verbose-log)
+            VERBOSE_LOG=1 ;;
+        --no-autoremove)
+            AUTOREMOVE=false ;;
+        --no-autoclean)
+            AUTOCLEAN=false ;;
+        *)
+            continue
+            ;;
     esac
     USED_FLAGS+=("$arg")
 done

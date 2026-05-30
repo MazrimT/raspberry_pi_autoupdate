@@ -21,8 +21,8 @@ sudo ./run.sh teardown --delete-logs
 > There is no validation of the input of the cron expression.
 > Please check crontab.guru or similar tool. If the expression is not correct it will still be setup up but not work.
 
-- `setup` - installs and sets up the autoupdate.sh script in cron. 
-  - optional parameters: 
+- `setup` - installs and sets up the autoupdate.sh script in cron.
+  - optional parameters:
     - --cron=""        # defaults to "* * * * *" meaning midnight
     - --no-reboot      # if set does not allow the update script to reboot the device
     - --no-full-upgrade # if set switches "apt full-upgrade" to just "apt upgrade"
@@ -32,7 +32,7 @@ sudo ./run.sh teardown --delete-logs
     - --verbose-log    # if set logs full apt output, not just summaries
     - --from-config    # ignores other flags set and uses the config file instead. if no config file creates it but does not add anything to it
 
-- `teardown` - removes everything set up in setup 
+- `teardown` - removes everything set up in setup
   - optional parameters:
     - --delete-logs
 
