@@ -18,13 +18,13 @@ Usage:  sudo ./run.sh <command> [options]
                          chosen options to the config file.
     --cron="* * * * *"   cron schedule (5 fields)   [default: * * * * *]
     --no-reboot          never reboot, even if a reboot is required
+    --always-reboot      always reboot after every run, even if not required
     --no-full-upgrade    use "apt upgrade" instead of "apt full-upgrade"
     --no-autoremove      skip "apt autoremove"
     --no-autoclean       skip "apt autoclean"
     --verbose-log        log full apt output, not just summaries
     --no-config          do not create/touch the config file
-
-  setup-from-config      Re-run setup using the options saved in the config file.
+    --from-config        re-run setup using the options saved in the config file
 
   teardown               Remove everything setup installed (logs kept by default).
     --delete-logs        also delete /var/log/autoupdate.log*
@@ -42,7 +42,7 @@ case "$cmd" in
     setup)
         bash src/setup.sh "$@"
 
-        # Save the passed options so they can be replayed with 'setup-from-config'
+        # Save the passed options so they can be replayed with 'setup --from-config'
         # (skipped when --no-config or --from-config is passed)
         skip_config=0
         for a in "$@"; do
@@ -51,22 +51,31 @@ case "$cmd" in
         if [ "$skip_config" = "1" ]; then
             echo "Leaving config file untouched."
         else
-            # Re-quote args that contain spaces so the cron value survives a replay
-            quoted=""
-            for a in "$@"; do
-                case "$a" in
-                    *" "*) quoted="$quoted '$a'" ;;
-                    *)     quoted="$quoted $a" ;;
+            # If a config file already exists, confirm before overwriting it
+            write_config=1
+            if [ -f "$CONFIG_FILE" ]; then
+                read -r -p "Config file '$CONFIG_FILE' already exists. Overwrite it? [y/N] " answer
+                case "$answer" in
+                    [Yy]|[Yy][Ee][Ss]) ;;
+                    *) write_config=0 ;;
                 esac
-            done
-            quoted="${quoted# }"
-            printf '%s\n' "$quoted" > "$CONFIG_FILE"
-        fi
-        ;;
+            fi
 
-    setup-from-config)
-        # setup.sh handles reading the config file (and creating it if missing)
-        bash src/setup.sh --from-config
+            if [ "$write_config" = "0" ]; then
+                echo "Keeping existing config file."
+            else
+                # Re-quote args that contain spaces so the cron value survives a replay
+                quoted=""
+                for a in "$@"; do
+                    case "$a" in
+                        *" "*) quoted="$quoted '$a'" ;;
+                        *)     quoted="$quoted $a" ;;
+                    esac
+                done
+                quoted="${quoted# }"
+                printf '%s\n' "$quoted" > "$CONFIG_FILE"
+            fi
+        fi
         ;;
 
     teardown)

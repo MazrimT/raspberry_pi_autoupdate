@@ -36,3 +36,8 @@ sudo ./run.sh teardown --delete-logs
   - optional parameters:
     - --delete-logs
 
+## config file
+run.sh will create a config file, it's just a simple text file `config` in root of the repo with all the flags to run setup with on a single line.
+
+example:
+`--cron="0 3 * * *" --verbose-log --always-reboot`
