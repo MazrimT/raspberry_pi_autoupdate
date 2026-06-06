@@ -69,30 +69,14 @@ fi
 echo "Installing update script to /usr/local/sbin/autoupdate ..."
 install -m 0755 src/autoupdate.sh /usr/local/sbin/autoupdate
 
-# Write configuration if anything differs from the defaults, otherwise clear it
-if [ "$ALLOW_REBOOT" = "false" ] || [ "$UPGRADE_TYPE" != "full-upgrade" ] || [ "$VERBOSE_LOG" != "0" ] || [ "$AUTOREMOVE" = "false" ] || [ "$AUTOCLEAN" = "false" ]; then
-    echo "Writing config to /etc/default/autoupdate ..."
-    cat > /etc/default/autoupdate <<EOF
-# autoupdate configuration
-ALLOW_REBOOT=${ALLOW_REBOOT}
-UPGRADE_TYPE=${UPGRADE_TYPE}
-VERBOSE_LOG=${VERBOSE_LOG}
-AUTOREMOVE=${AUTOREMOVE}
-AUTOCLEAN=${AUTOCLEAN}
-EOF
-    chmod 0644 /etc/default/autoupdate
-else
-    echo "All options are default — removing any existing /etc/default/autoupdate ..."
-    rm -f /etc/default/autoupdate
-fi
-
-# setup the cron job
+# setup the cron job — settings are passed inline as environment variables so
+# there is no separate config file written to the system
 echo "Installing cron job to /etc/cron.d/autoupdate ..."
 cat > /etc/cron.d/autoupdate << EOF
 # Run system auto-update on schedule: ${CRON_SCHEDULE}
 SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-${CRON_SCHEDULE} root /usr/local/sbin/autoupdate.sh
+${CRON_SCHEDULE} root ALLOW_REBOOT=${ALLOW_REBOOT} UPGRADE_TYPE=${UPGRADE_TYPE} VERBOSE_LOG=${VERBOSE_LOG} AUTOREMOVE=${AUTOREMOVE} AUTOCLEAN=${AUTOCLEAN} /usr/local/sbin/autoupdate.sh
 EOF
 chmod 0644 /etc/cron.d/autoupdate
 

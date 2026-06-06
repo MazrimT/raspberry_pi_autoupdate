@@ -3,8 +3,8 @@ set -e
 
 LOGFILE="/var/log/autoupdate.log"
 
-# Optional config (e.g. ALLOW_REBOOT=false, UPGRADE_TYPE=upgrade, VERBOSE_LOG=1), written by setup.sh
-[ -f /etc/default/autoupdate ] && . /etc/default/autoupdate
+# Settings (e.g. ALLOW_REBOOT=false, UPGRADE_TYPE=upgrade, VERBOSE_LOG=1) are passed
+# in as environment variables by the cron job; fall back to defaults otherwise.
 ALLOW_REBOOT="${ALLOW_REBOOT:-true}"
 UPGRADE_TYPE="${UPGRADE_TYPE:-full-upgrade}"
 VERBOSE_LOG="${VERBOSE_LOG:-0}"
@@ -44,8 +44,8 @@ if [ -f /var/run/reboot-required ]; then
         log "Reboot required — rebooting"
         reboot
     else
-        log "Reboot required but reboots are disabled — skipping"
+        log "Reboot required but reboots are disabled, update complete."
     fi
 else
-    log "No reboot required"
+    log "No reboot required, update complete."
 fi
