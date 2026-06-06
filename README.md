@@ -41,3 +41,5 @@ run.sh will create a config file, it's just a simple text file `config` in root 
 
 example:
 `--cron="0 3 * * *" --verbose-log --always-reboot`
+
+you can then use the config with `./run.sh setup --from-config`
