@@ -23,7 +23,7 @@ sudo ./run.sh teardown --delete-logs
 
 - `setup` - installs and sets up the autoupdate.sh script in cron.
   - optional parameters:
-    - --cron=""        # defaults to "* * * * *" meaning midnight
+    - --cron=""        # defaults to "0 0 * * *" ie. midnight
     - --no-reboot      # if set does not allow the update script to reboot the device
     - --no-full-upgrade # if set switches "apt full-upgrade" to just "apt upgrade"
     - --no-autoremove  # if set skips "apt autoremove" (runs by default)

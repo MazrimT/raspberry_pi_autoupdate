@@ -61,7 +61,7 @@ for arg in "$@"; do
     USED_FLAGS+=("$arg")
 done
 # Default schedule if --cron is not provided
-CRON_SCHEDULE="${CRON_SCHEDULE:-* * * * *}"
+CRON_SCHEDULE="${CRON_SCHEDULE:-0 0 * * *}"
 
 if [ "${#USED_FLAGS[@]}" -gt 0 ]; then
     echo "Setting up autoupdate with flags: ${USED_FLAGS[*]}"
