@@ -63,6 +63,18 @@ done
 # Default schedule if --cron is not provided
 CRON_SCHEDULE="${CRON_SCHEDULE:-0 0 * * *}"
 
+# Warn if scheduling a reboot every single minute — this can make the device
+# unreachable. Normalize whitespace before comparing to "* * * * *".
+NORMALIZED_CRON="$(echo "$CRON_SCHEDULE" | tr -s '[:space:]' ' ' | sed 's/^ //;s/ $//')"
+if [ "$NORMALIZED_CRON" = "* * * * *" ] && [ "$ALWAYS_REBOOT" = true ]; then
+    echo "Are you sure? This will mean rebooting every minute and might cause the device to become inaccessible" >&2
+    read -r -p "Type 'yes' to continue: " CONFIRM
+    if [ "$CONFIRM" != "yes" ]; then
+        echo "Aborted." >&2
+        exit 1
+    fi
+fi
+
 if [ "${#USED_FLAGS[@]}" -gt 0 ]; then
     echo "Setting up autoupdate with flags: ${USED_FLAGS[*]}"
 else
