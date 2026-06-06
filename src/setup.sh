@@ -63,11 +63,15 @@ done
 # Default schedule if --cron is not provided
 CRON_SCHEDULE="${CRON_SCHEDULE:-0 0 * * *}"
 
-# Warn if scheduling a reboot every single minute — this can make the device
-# unreachable. Normalize whitespace before comparing to "* * * * *".
+# Warn if scheduling a reboot every few minutes — this can make the device
+# unreachable. Normalize whitespace, then check for a minute field of "*",
+# "*/1" .. "*/5" with the remaining four fields all "*".
 NORMALIZED_CRON="$(echo "$CRON_SCHEDULE" | tr -s '[:space:]' ' ' | sed 's/^ //;s/ $//')"
-if [ "$NORMALIZED_CRON" = "* * * * *" ] && [ "$ALWAYS_REBOOT" = true ]; then
-    echo "Are you sure? This will mean rebooting every minute and might cause the device to become inaccessible" >&2
+MINUTE_FIELD="${NORMALIZED_CRON%% *}"
+REST_FIELDS="${NORMALIZED_CRON#* }"
+if [ "$ALWAYS_REBOOT" = true ] && [ "$REST_FIELDS" = "* * * *" ] \
+    && { [ "$MINUTE_FIELD" = "*" ] || [[ "$MINUTE_FIELD" =~ ^\*/[1-9]$ ]]; }; then
+    echo "Are you sure? This will mean rebooting very often and might cause the device to become inaccessible" >&2
     read -r -p "Type 'yes' to continue: " CONFIRM
     if [ "$CONFIRM" != "yes" ]; then
         echo "Aborted." >&2
