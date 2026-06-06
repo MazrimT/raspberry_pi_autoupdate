@@ -18,6 +18,7 @@ Usage:  sudo ./run.sh <command> [options]
                          chosen options to the config file.
     --cron="* * * * *"   cron schedule (5 fields)   [default: * * * * *]
     --no-reboot          never reboot, even if a reboot is required
+    --always-reboot      always reboot after every run, even if not required
     --no-full-upgrade    use "apt upgrade" instead of "apt full-upgrade"
     --no-autoremove      skip "apt autoremove"
     --no-autoclean       skip "apt autoclean"

@@ -6,6 +6,7 @@ LOGFILE="/var/log/autoupdate.log"
 # Settings (e.g. ALLOW_REBOOT=false, UPGRADE_TYPE=upgrade, VERBOSE_LOG=1) are passed
 # in as environment variables by the cron job; fall back to defaults otherwise.
 ALLOW_REBOOT="${ALLOW_REBOOT:-true}"
+ALWAYS_REBOOT="${ALWAYS_REBOOT:-false}"
 UPGRADE_TYPE="${UPGRADE_TYPE:-full-upgrade}"
 VERBOSE_LOG="${VERBOSE_LOG:-0}"
 AUTOREMOVE="${AUTOREMOVE:-true}"
@@ -39,13 +40,16 @@ if [ "$AUTOCLEAN" = "true" ]; then
 fi
 
 # Reboot if needed
-if [ -f /var/run/reboot-required ]; then
+if [ "$ALWAYS_REBOOT" = "true" ]; then
+    log "Update complete, always-reboot is set, rebooting"
+    reboot
+elif [ -f /var/run/reboot-required ]; then
     if [ "$ALLOW_REBOOT" = "true" ]; then
-        log "Reboot required — rebooting"
+        log "Update complete, reboot required, rebooting"
         reboot
     else
-        log "Reboot required but reboots are disabled, update complete."
+        log "Update complete, reboot required but reboots are disabled."
     fi
 else
-    log "No reboot required, update complete."
+    log "Update complete, no reboot required."
 fi
