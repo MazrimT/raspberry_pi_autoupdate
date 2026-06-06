@@ -76,7 +76,7 @@ cat > /etc/cron.d/autoupdate << EOF
 # Run system auto-update on schedule: ${CRON_SCHEDULE}
 SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-${CRON_SCHEDULE} root ALLOW_REBOOT=${ALLOW_REBOOT} UPGRADE_TYPE=${UPGRADE_TYPE} VERBOSE_LOG=${VERBOSE_LOG} AUTOREMOVE=${AUTOREMOVE} AUTOCLEAN=${AUTOCLEAN} /usr/local/sbin/autoupdate.sh
+${CRON_SCHEDULE} root ALLOW_REBOOT=${ALLOW_REBOOT} UPGRADE_TYPE=${UPGRADE_TYPE} VERBOSE_LOG=${VERBOSE_LOG} AUTOREMOVE=${AUTOREMOVE} AUTOCLEAN=${AUTOCLEAN} /usr/local/sbin/autoupdate
 EOF
 chmod 0644 /etc/cron.d/autoupdate
 
